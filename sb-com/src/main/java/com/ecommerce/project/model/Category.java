@@ -17,6 +17,9 @@ public class Category {
         this.categoryId = categoryId;
         this.categoryName = categoryName;
     }
+    public Category(){
+
+    }
 
     public String getCategoryName() {
         return categoryName;
