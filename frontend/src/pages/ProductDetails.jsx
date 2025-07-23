@@ -40,7 +40,7 @@ export default function ProductDetails() {
         <CardMedia
           component="img"
           height="240"
-          image="https://source.unsplash.com/featured/?product"
+          image={product.imageUrl || "https://source.unsplash.com/featured/?product"}
           alt={product.name}
         />
         <CardContent>
