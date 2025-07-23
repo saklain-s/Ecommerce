@@ -26,7 +26,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Map<String, String> loginData) {
+    public ResponseEntity<Map<String, String>> login(@RequestBody Map<String, String> loginData) {
         String username = loginData.get("username");
         String password = loginData.get("password");
         return userService.login(username, password)
@@ -36,6 +36,32 @@ public class UserController {
                     response.put("token", token);
                     return ResponseEntity.ok(response);
                 })
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials"));
+                .orElseGet(() -> {
+                    Map<String, String> error = new HashMap<>();
+                    error.put("error", "Invalid credentials");
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+                });
+    }
+
+    @GetMapping("/{username}")
+    public ResponseEntity<User> getUser(@PathVariable String username) {
+        return userService.getByUsername(username)
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/{username}/password")
+    public ResponseEntity<?> updatePassword(@PathVariable String username, @RequestBody Map<String, String> body) {
+        String newPassword = body.get("password");
+        if (newPassword == null || newPassword.isEmpty()) {
+            return ResponseEntity.badRequest().body("Password is required");
+        }
+        return userService.getByUsername(username)
+            .map(user -> {
+                user.setPassword(new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder().encode(newPassword));
+                userService.register(user); // save updated user
+                return ResponseEntity.ok("Password updated successfully");
+            })
+            .orElse(ResponseEntity.notFound().build());
     }
 } 

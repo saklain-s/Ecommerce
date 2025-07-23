@@ -1,6 +1,6 @@
 
 # 🛒 SprinEcommerce - Spring Boot E-Commerce Application
-
+  ss
 MyCoolLeap is a simple e-commerce web application built using **Spring Boot 3.5.0**, featuring Spring Web, Actuator for monitoring, and DevTools for efficient development. The application supports the creation and management of **product categories**, forming the foundation for a scalable e-commerce backend.
 
 ---
