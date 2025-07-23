@@ -26,7 +26,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Map<String, String> loginData) {
+    public ResponseEntity<Map<String, String>> login(@RequestBody Map<String, String> loginData) {
         String username = loginData.get("username");
         String password = loginData.get("password");
         return userService.login(username, password)
@@ -36,6 +36,10 @@ public class UserController {
                     response.put("token", token);
                     return ResponseEntity.ok(response);
                 })
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials"));
+                .orElseGet(() -> {
+                    Map<String, String> error = new HashMap<>();
+                    error.put("error", "Invalid credentials");
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+                });
     }
 } 
