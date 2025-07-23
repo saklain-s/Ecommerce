@@ -11,10 +11,16 @@ public class Product {
     private String description;
     private double price;
     private int stock;
+    @Column(name = "image_url")
+    private String imageUrl;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
+
+    @ManyToOne
+    @JoinColumn(name = "created_by")
+    private User createdBy;
 
     public Product() {}
 
@@ -39,4 +45,8 @@ public class Product {
     public void setStock(int stock) { this.stock = stock; }
     public Category getCategory() { return category; }
     public void setCategory(Category category) { this.category = category; }
+    public User getCreatedBy() { return createdBy; }
+    public void setCreatedBy(User createdBy) { this.createdBy = createdBy; }
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 } 

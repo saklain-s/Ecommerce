@@ -25,9 +25,9 @@ public class CategoryController {
     public ResponseEntity <List<Category>> getAllCategories(){
         List<Category> categories = categoryService.getAllCategories();
         return new ResponseEntity<>(categories, HttpStatus.OK);
-    }
+    } 
 
-
+  
     @PostMapping("/public/categories")
    // @RequestMapping(value = "/public/categories", method = RequestMethod.POST)
 

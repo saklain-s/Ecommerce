@@ -7,14 +7,20 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
+
+    @Column(unique = true)
     private String username;
+
+    @Column(unique = true)
     private String email;
+
     private String password;
+    private String panNumber;
     @Enumerated(EnumType.STRING)
     private Role role;
 
     public enum Role {
-        ADMIN, CUSTOMER
+        SELLER, CUSTOMER
     }
 
     public User() {}
@@ -37,4 +43,6 @@ public class User {
     public void setPassword(String password) { this.password = password; }
     public Role getRole() { return role; }
     public void setRole(Role role) { this.role = role; }
+    public String getPanNumber() { return panNumber; }
+    public void setPanNumber(String panNumber) { this.panNumber = panNumber; }
 } 

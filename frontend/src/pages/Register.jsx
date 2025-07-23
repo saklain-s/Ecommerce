@@ -8,6 +8,7 @@ export default function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('CUSTOMER');
+  const [panNumber, setPanNumber] = useState('');
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
@@ -15,11 +16,28 @@ export default function Register() {
     e.preventDefault();
     setError(null);
     try {
-      await axios.post('http://localhost:8080/api/users/register', { username, email, password, role });
+      await axios.post('http://localhost:8080/api/users/register', {
+        username,
+        email,
+        password,
+        role,
+        panNumber: role === 'SELLER' ? panNumber : undefined
+      });
       navigate('/login');
     } catch (err) {
-      setError('Registration failed');
+      if (err.response && err.response.status === 409) {
+        setError(err.response.data || 'Username or email already exists');
+      } else if (err.response && err.response.status === 400) {
+        setError(err.response.data || 'PAN number is required for sellers');
+      } else {
+        setError('Registration failed');
+      }
     }
+  };
+
+  const handlePanChange = (e) => {
+    // Only allow uppercase letters and numbers
+    setPanNumber(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''));
   };
 
   return (
@@ -61,8 +79,20 @@ export default function Register() {
             margin="normal"
           >
             <MenuItem value="CUSTOMER">Customer</MenuItem>
-            <MenuItem value="ADMIN">Admin</MenuItem>
+            <MenuItem value="SELLER">Seller</MenuItem>
           </TextField>
+          {role === 'SELLER' && (
+            <TextField
+              label="PAN Number"
+              value={panNumber}
+              onChange={handlePanChange}
+              fullWidth
+              margin="normal"
+              required
+              inputProps={{ maxLength: 10 }}
+              helperText="Enter your PAN (uppercase letters and numbers only)"
+            />
+          )}
           {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
           <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
             Register

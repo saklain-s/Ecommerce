@@ -4,8 +4,10 @@ import com.ecommerce.project.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,8 +15,14 @@ import java.util.function.Function;
 
 @Component
 public class JwtUtil {
-    private final String SECRET_KEY = "mysecretkey123456";
+    // Use a secure, random key for HS256
+    private final SecretKey SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     private final long EXPIRATION = 1000 * 60 * 60 * 10; // 10 hours
+
+    public JwtUtil() {
+        System.out.println("JWT SECRET KEY (base64): " + java.util.Base64.getEncoder().encodeToString(SECRET_KEY.getEncoded()));
+        System.out.println("JWT SECRET KEY LENGTH (bits): " + (SECRET_KEY.getEncoded().length * 8));
+    }
 
     public String generateToken(User user) {
         Map<String, Object> claims = new HashMap<>();
@@ -28,7 +36,7 @@ public class JwtUtil {
                 .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+                .signWith(SECRET_KEY)
                 .compact();
     }
 
@@ -56,5 +64,21 @@ public class JwtUtil {
 
     private Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
+    }
+
+    public static String extractUsernameFromHeader(String authHeader) {
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            String token = authHeader.substring(7);
+            String[] parts = token.split("\\.");
+            if (parts.length == 3) {
+                String payload = new String(java.util.Base64.getDecoder().decode(parts[1]));
+                if (payload.contains("\"sub\"")) {
+                    return payload.split("\"sub\":\"")[1].split("\"")[0];
+                } else if (payload.contains("\"username\"")) {
+                    return payload.split("\"username\":\"")[1].split("\"")[0];
+                }
+            }
+        }
+        return null;
     }
 } 

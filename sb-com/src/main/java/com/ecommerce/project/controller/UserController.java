@@ -42,4 +42,26 @@ public class UserController {
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
                 });
     }
+
+    @GetMapping("/{username}")
+    public ResponseEntity<User> getUser(@PathVariable String username) {
+        return userService.getByUsername(username)
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/{username}/password")
+    public ResponseEntity<?> updatePassword(@PathVariable String username, @RequestBody Map<String, String> body) {
+        String newPassword = body.get("password");
+        if (newPassword == null || newPassword.isEmpty()) {
+            return ResponseEntity.badRequest().body("Password is required");
+        }
+        return userService.getByUsername(username)
+            .map(user -> {
+                user.setPassword(new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder().encode(newPassword));
+                userService.register(user); // save updated user
+                return ResponseEntity.ok("Password updated successfully");
+            })
+            .orElse(ResponseEntity.notFound().build());
+    }
 } 

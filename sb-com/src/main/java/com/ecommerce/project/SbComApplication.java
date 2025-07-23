@@ -2,6 +2,20 @@ package com.ecommerce.project;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Bean;
+import com.ecommerce.project.model.Category;
+import com.ecommerce.project.repositories.CategoryRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+
 
 @SpringBootApplication
 public class SbComApplication {
@@ -10,6 +24,21 @@ public class SbComApplication {
 		SpringApplication.run(SbComApplication.class, args);
 	}
 
+	@Bean
+	public CommandLineRunner initCategories(CategoryRepository categoryRepository) {
+		return args -> {
+			if (categoryRepository.count() == 0) {
+				categoryRepository.save(new Category(null, "Electronics"));
+				categoryRepository.save(new Category(null, "Fashion"));
+				categoryRepository.save(new Category(null, "Home"));
+				categoryRepository.save(new Category(null, "Books"));
+				categoryRepository.save(new Category(null, "Sports"));
+				categoryRepository.save(new Category(null, "Beauty"));
+				categoryRepository.save(new Category(null, "Toys"));
+				categoryRepository.save(new Category(null, "Grocery"));
+			}
+		};
+	}
 }
 /*
 package com.ecommerce.project.service;
