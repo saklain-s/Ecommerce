@@ -22,7 +22,7 @@ public class SbComApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(SbComApplication.class, args);
-        return
+        
 	}
    
 	@Bean
