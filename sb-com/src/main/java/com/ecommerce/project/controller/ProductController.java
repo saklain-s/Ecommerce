@@ -8,12 +8,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import com.ecommerce.project.model.User;
+import com.ecommerce.project.service.UserService;
+import com.ecommerce.project.security.JwtUtil;
+import org.springframework.web.multipart.MultipartFile;
+import com.ecommerce.project.service.ImageUploadService;
 
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
     @Autowired
     private ProductService productService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private ImageUploadService imageUploadService;
 
     @GetMapping
     public ResponseEntity<List<Product>> getAllProducts() {
@@ -30,8 +39,25 @@ public class ProductController {
         return ResponseEntity.ok(productService.getProductsByCategory(categoryId));
     }
 
-    @PostMapping
-    public ResponseEntity<Product> createProduct(@RequestBody Product product) {
+    @PostMapping(consumes = {"multipart/form-data"})
+    public ResponseEntity<Product> createProduct(
+            @RequestPart("product") Product product,
+            @RequestPart(value = "image", required = false) MultipartFile image,
+            @RequestHeader("Authorization") String authHeader) {
+        String username = com.ecommerce.project.security.JwtUtil.extractUsernameFromHeader(authHeader);
+        User user = userService.getByUsername(username).orElseThrow();
+        if (user.getRole() != User.Role.SELLER) {
+            return ResponseEntity.status(403).build();
+        }
+        product.setCreatedBy(user);
+        if (image != null && !image.isEmpty()) {
+            try {
+                String imageUrl = imageUploadService.uploadFile(image);
+                product.setImageUrl(imageUrl);
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            }
+        }
         return new ResponseEntity<>(productService.createProduct(product), HttpStatus.CREATED);
     }
 
@@ -41,8 +67,13 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
-        productService.deleteProduct(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long id, @RequestHeader("Authorization") String authHeader) {
+        String username = com.ecommerce.project.security.JwtUtil.extractUsernameFromHeader(authHeader);
+        User user = userService.getByUsername(username).orElseThrow();
+        if (user.getRole() == User.Role.SELLER) {
+            productService.deleteProduct(id);
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.status(403).build();
     }
 } 
