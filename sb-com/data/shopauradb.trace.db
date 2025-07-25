@@ -1,0 +1,6 @@
+2025-07-26 02:11:14.651623+05:30 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "CATEGORIES" not found (this database is empty); SQL statement:
+select count(*) from categories c1_0 [42104-232]
+2025-07-26 02:11:45.838710+05:30 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "CATEGORIES" not found (this database is empty); SQL statement:
+select count(*) from categories c1_0 [42104-232]
