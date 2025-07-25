@@ -5,6 +5,7 @@ import ProductCard from '../components/ProductCard';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useAuth } from '../context/AuthContext';
+import { useCart } from '../context/CartContext';
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -20,6 +21,7 @@ export default function Products() {
   const [deleteDialog, setDeleteDialog] = useState({ open: false, productId: null });
   const navigate = useNavigate();
   const query = useQuery();
+  const { addToCart } = useCart();
 
   useEffect(() => {
     axios.get('http://localhost:8080/api/products')
@@ -107,13 +109,19 @@ export default function Products() {
             <Grid item xs={12} sm={6} md={4} lg={3} key={product.productId}>
               <Box position="relative">
                 <Link to={`/products/${product.productId}`} style={{ textDecoration: 'none' }}>
-                  <ProductCard product={product} />
+                  <ProductCard
+                    product={product}
+                    onAddToCart={p => {
+                      addToCart(p, 1);
+                      setSnackbar({ open: true, message: `${p.name} added to cart!`, severity: 'success' });
+                    }}
+                  />
                 </Link>
                 {role === 'SELLER' && (
                   <IconButton
                     color="error"
                     size="small"
-                    onClick={() => handleDeleteClick(product.productId)}
+                    onClick={() => handleDelete(product.productId)}
                     sx={{ position: 'absolute', top: 8, right: 8, bgcolor: 'background.paper', zIndex: 2 }}
                   >
                     <DeleteIcon />

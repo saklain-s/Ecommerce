@@ -2,19 +2,21 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Box, Typography, TextField, Button, Alert, Paper } from '@mui/material';
+import { useAuth } from '../context/AuthContext';
 
 export default function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
     try {
       const res = await axios.post('http://localhost:8080/api/users/login', { username, password });
-      localStorage.setItem('token', res.data.token);
+      login(res.data.token);
       navigate('/');
     } catch (err) {
       setError('Invalid username or password');
