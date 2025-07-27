@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Box, Typography, Card, CardContent, CardMedia, CircularProgress, Button } from '@mui/material';
+import { Box, Typography, Card, CardContent, CardMedia, CircularProgress, Button, IconButton } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import { useCart } from '../context/CartContext';
 
 export default function ProductDetails() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -36,7 +38,25 @@ export default function ProductDetails() {
 
   return (
     <Box mt={4} display="flex" justifyContent="center">
-      <Card sx={{ maxWidth: 500 }}>
+      <Card sx={{ maxWidth: 500, position: 'relative' }}>
+        <IconButton
+          onClick={() => navigate('/products')}
+          sx={{
+            position: 'absolute',
+            top: 8,
+            right: 8,
+            bgcolor: 'rgba(255, 255, 255, 0.9)',
+            boxShadow: 2,
+            zIndex: 10,
+            color: 'grey.500',
+            '&:hover': { 
+              bgcolor: 'rgba(255, 255, 255, 1)',
+              color: 'grey.700'
+            }
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
         <CardMedia
           component="img"
           height="240"
@@ -46,7 +66,7 @@ export default function ProductDetails() {
         <CardContent>
           <Typography variant="h5" gutterBottom>{product.name}</Typography>
           <Typography variant="body1" color="text.secondary" gutterBottom>{product.description}</Typography>
-          <Typography variant="h6" color="primary">${product.price}</Typography>
+          <Typography variant="h6" color="primary">₹{product.price}</Typography>
           <Typography variant="body2" color="text.secondary">Stock: {product.stock}</Typography>
           <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleAddToCart} disabled={added}>
             {added ? 'Added!' : 'Add to Cart'}

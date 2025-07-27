@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer } from 'react';
+import React, { createContext, useContext, useReducer, useEffect } from 'react';
 
 const CartContext = createContext();
 
@@ -45,7 +45,23 @@ function cartReducer(state, action) {
 }
 
 export function CartProvider({ children }) {
-  const [state, dispatch] = useReducer(cartReducer, initialState);
+  // Load cart from localStorage on initialization
+  const loadCartFromStorage = () => {
+    try {
+      const savedCart = localStorage.getItem('cart');
+      return savedCart ? JSON.parse(savedCart) : initialState;
+    } catch (error) {
+      console.error('Error loading cart from storage:', error);
+      return initialState;
+    }
+  };
+
+  const [state, dispatch] = useReducer(cartReducer, loadCartFromStorage());
+
+  // Save cart to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('cart', JSON.stringify(state));
+  }, [state]);
 
   const addToCart = (product, quantity = 1) => {
     dispatch({ type: 'ADD_ITEM', product, quantity });

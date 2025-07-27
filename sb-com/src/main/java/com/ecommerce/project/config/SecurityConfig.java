@@ -32,8 +32,15 @@ public class SecurityConfig {
                     "/api/users/login",
                     "/api/products",
                     "/api/products/*",
+                    "/api/products/paginated",
+                    "/api/products/search",
+                    "/api/products/price-range",
+                    "/api/products/stats",
                     "/api/public/categories",
                     "/api/public/categories/*",
+                    "/api/cache/stats",
+                    "/api/cache/health",
+                    "/api/cache/info",
                     "/actuator/**"
                 ).permitAll()
                 .anyRequest().authenticated()

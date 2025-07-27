@@ -76,7 +76,7 @@ export default function Cart() {
                   <CardContent>
                     <Box display="flex" alignItems="center" justifyContent="space-between">
                       <Typography variant="h6">{product.name}</Typography>
-                      <Chip label={`$${product.price}`} color="primary" size="small" />
+                      <Chip label={`₹${product.price}`} color="primary" size="small" />
                     </Box>
                     <Typography variant="body2" color="text.secondary" mb={1}>{product.description}</Typography>
                     <Box display="flex" alignItems="center" mt={2}>
@@ -101,7 +101,7 @@ export default function Cart() {
           </Grid>
           <Divider sx={{ my: 3 }} />
           <Box mt={3} display="flex" flexDirection={{ xs: 'column', sm: 'row' }} justifyContent="space-between" alignItems={{ xs: 'stretch', sm: 'center' }}>
-            <Typography variant="h6">Total: <Chip label={`$${total.toFixed(2)}`} color="success" size="medium" /></Typography>
+            <Typography variant="h6">Total: <Chip label={`₹${total.toFixed(2)}`} color="success" size="medium" /></Typography>
             <Box mt={{ xs: 2, sm: 0 }}>
               <Button variant="outlined" color="error" onClick={() => { clearCart(); setSnackbar({ open: true, message: 'Cart cleared', severity: 'info' }); }} sx={{ mr: 2 }}>Clear Cart</Button>
               <Button variant="contained" color="primary" onClick={handleCheckout} disabled={loading}>

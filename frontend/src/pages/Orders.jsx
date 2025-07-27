@@ -47,11 +47,11 @@ export default function Orders() {
                   <Typography variant="h6">Order #{order.orderId}</Typography>
                   <Typography variant="body2">Date: {order.orderDate}</Typography>
                   <Typography variant="body2">Status: {order.status}</Typography>
-                  <Typography variant="body2">Total: ${order.total}</Typography>
+                  <Typography variant="body2">Total: ₹{order.total}</Typography>
                   <Typography variant="subtitle2" mt={2}>Items:</Typography>
                   {order.items && order.items.map(item => (
                     <Typography key={item.orderItemId} variant="body2">
-                      {item.product.name} x {item.quantity} (${item.price} each)
+                      {item.product.name} x {item.quantity} (₹{item.price} each)
                     </Typography>
                   ))}
                 </CardContent>

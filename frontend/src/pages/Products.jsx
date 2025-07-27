@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Grid, Typography, CircularProgress, Box, Button, IconButton, Snackbar, Alert, Divider, Chip, Skeleton } from '@mui/material';
+import { Grid, Typography, CircularProgress, Box, Button, IconButton, Snackbar, Alert, Divider, Chip, Skeleton, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import ProductCard from '../components/ProductCard';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -15,7 +15,7 @@ export default function Products() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { token, isAuthenticated } = useAuth();
+  const { token, isAuthenticated, username } = useAuth();
   const [role, setRole] = useState('CUSTOMER');
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
   const [deleteDialog, setDeleteDialog] = useState({ open: false, productId: null });
@@ -117,11 +117,11 @@ export default function Products() {
                     }}
                   />
                 </Link>
-                {role === 'SELLER' && (
+                {role === 'SELLER' && product.createdBy && product.createdBy.username === username && (
                   <IconButton
                     color="error"
                     size="small"
-                    onClick={() => handleDelete(product.productId)}
+                    onClick={() => handleDeleteClick(product.productId)}
                     sx={{ position: 'absolute', top: 8, right: 8, bgcolor: 'background.paper', zIndex: 2 }}
                   >
                     <DeleteIcon />
@@ -140,7 +140,20 @@ export default function Products() {
       >
         <Alert severity={snackbar.severity} sx={{ width: '100%' }}>{snackbar.message}</Alert>
       </Snackbar>
-      {/* The Dialog component was removed from imports, so it's removed here. */}
+      
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={deleteDialog.open} onClose={handleDeleteCancel}>
+        <DialogTitle>Confirm Delete</DialogTitle>
+        <DialogContent>
+          Are you sure you want to delete this product? This action cannot be undone.
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteCancel}>Cancel</Button>
+          <Button onClick={() => handleDelete(deleteDialog.productId)} color="error" variant="contained">
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 } 
