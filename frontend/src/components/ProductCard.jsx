@@ -62,7 +62,7 @@ export default function ProductCard({ product, onAddToCart }) {
       <CardContent>
         <Box display="flex" alignItems="center" justifyContent="space-between" mb={1}>
           <Typography variant="h6" noWrap>{product.name}</Typography>
-          <Chip label={`$${product.price}`} color="primary" size="small" sx={{ fontWeight: 700 }} />
+          <Chip label={`₹${product.price}`} color="primary" size="small" sx={{ fontWeight: 700 }} />
         </Box>
         <Typography variant="body2" color="text.secondary" mb={1}>
           {product.description}

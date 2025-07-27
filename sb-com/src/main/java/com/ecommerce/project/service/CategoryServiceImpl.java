@@ -10,6 +10,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 
 
@@ -20,16 +21,46 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Autowired
     private CategoryRepository categoryRepository;
+    @Autowired
+    private RedisService redisService;
 
     @Override
     public List<Category> getAllCategories() {
-        return categoryRepository.findAll();
+        try {
+            // Try to get from cache first
+            Object cachedCategories = redisService.get("all_categories");
+            if (cachedCategories != null) {
+                return (List<Category>) cachedCategories;
+            }
+        } catch (Exception e) {
+            // If Redis fails, continue with database lookup
+            System.err.println("Redis cache error for categories: " + e.getMessage());
+        }
+        
+        // If not in cache or Redis fails, get from database
+        List<Category> categories = categoryRepository.findAll();
+        
+        // Try to cache the categories (don't fail if Redis is down)
+        try {
+            redisService.set("all_categories", categories, 2, TimeUnit.HOURS);
+        } catch (Exception e) {
+            System.err.println("Redis cache error for categories: " + e.getMessage());
+        }
+        
+        return categories;
     }
 
     @Override
     public void createCategory(Category category) {
         //category.setCategoryId(nextId++);
         categoryRepository.save(category);
+        
+        // Try to invalidate categories cache (don't fail if Redis is down)
+        try {
+            redisService.delete("all_categories");
+        } catch (Exception e) {
+            System.err.println("Redis cache invalidation error: " + e.getMessage());
+        }
     }
 
     @Override
@@ -38,6 +69,13 @@ public class CategoryServiceImpl implements CategoryService {
                 .orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource Not Found"));
         categoryRepository.delete(category);
 
+        // Try to invalidate categories cache (don't fail if Redis is down)
+        try {
+            redisService.delete("all_categories");
+        } catch (Exception e) {
+            System.err.println("Redis cache invalidation error: " + e.getMessage());
+        }
+        
         return "Category with categoryId: "+categoryId+" deleted successfully";
     }
 
@@ -49,6 +87,14 @@ public class CategoryServiceImpl implements CategoryService {
 
         category.setCategoryId(categoryId);
         savedCategory = categoryRepository.save(category);
+        
+        // Try to invalidate categories cache (don't fail if Redis is down)
+        try {
+            redisService.delete("all_categories");
+        } catch (Exception e) {
+            System.err.println("Redis cache invalidation error: " + e.getMessage());
+        }
+        
         return savedCategory;
     }
 
