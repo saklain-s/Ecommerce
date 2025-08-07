@@ -1,6 +1,10 @@
 spring:
   profiles:
+<<<<<<< HEAD
     active: production
+=======
+  #    active: production
+>>>>>>> 01ff45a (your commit message)
   
   # Database Configuration
   datasource:

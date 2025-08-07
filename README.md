@@ -1,4 +1,4 @@
-# 🛒 ShopAura - Full Stack E-Commerce Application
+# 🛒 SprinEcommerce - Full Stack E-Commerce Application
 
 ShopAura is a modern, full-stack e-commerce web application featuring a robust Spring Boot backend and a React (Vite + Material-UI) frontend. It supports user registration (Customer/Seller), JWT authentication, product and category management, image uploads via Cloudinary, a shopping cart, and order processing.
 

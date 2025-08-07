@@ -7,8 +7,13 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
+<<<<<<< HEAD
 # Install dependencies
 RUN npm ci --only=production
+=======
+# Install dependencies (including dev dependencies for build)
+RUN npm ci
+>>>>>>> 01ff45a (your commit message)
 
 # Copy source code
 COPY . .

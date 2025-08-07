@@ -4,6 +4,7 @@ import com.ecommerce.project.service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,9 +12,10 @@ import java.util.Set;
 
 @RestController
 @RequestMapping("/api/cache")
+@ConditionalOnProperty(name = "spring.cache.type", havingValue = "redis")
 public class RedisController {
 
-    @Autowired
+    @Autowired(required = false)
     private RedisService redisService;
 
     @GetMapping("/stats")

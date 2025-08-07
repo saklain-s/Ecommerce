@@ -21,7 +21,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Autowired
     private CategoryRepository categoryRepository;
-    @Autowired
+    @Autowired(required = false)
     private RedisService redisService;
 
     @Override

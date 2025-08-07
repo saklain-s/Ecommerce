@@ -20,7 +20,7 @@ public class ProductServiceImpl implements ProductService {
     private ProductRepository productRepository;
     @Autowired
     private CategoryRepository categoryRepository;
-    @Autowired
+    @Autowired(required = false)
     private RedisService redisService;
 
     @Override

@@ -1,9 +1,3 @@
-<<<<<<< HEAD
-=======
-# Free Tier Optimized Infrastructure
-# This configuration minimizes costs to stay within AWS Free Tier
-
->>>>>>> 01ff45a (your commit message)
 terraform {
   required_version = ">= 1.0"
   required_providers {
@@ -18,18 +12,13 @@ provider "aws" {
   region = var.aws_region
 }
 
-<<<<<<< HEAD
 # VPC and Networking
-=======
-# VPC - Free
->>>>>>> 01ff45a (your commit message)
 resource "aws_vpc" "main" {
   cidr_block           = "10.0.0.0/16"
   enable_dns_hostnames = true
   enable_dns_support   = true
 
   tags = {
-<<<<<<< HEAD
     Name = "shopaura-vpc"
   }
 }
@@ -55,32 +44,6 @@ resource "aws_subnet" "private" {
 
   tags = {
     Name = "shopaura-private-subnet-${count.index + 1}"
-=======
-    Name = "shopaura-vpc-free"
-  }
-}
-
-# Single Public Subnet - Free
-resource "aws_subnet" "public_1" {
-  vpc_id                  = aws_vpc.main.id
-  cidr_block              = "10.0.1.0/24"
-  availability_zone       = data.aws_availability_zones.available.names[0]
-  map_public_ip_on_launch = true
-
-  tags = {
-    Name = "shopaura-public-subnet-1"
-  }
-}
-
-resource "aws_subnet" "public_2" {
-  vpc_id                  = aws_vpc.main.id
-  cidr_block              = "10.0.2.0/24"
-  availability_zone       = data.aws_availability_zones.available.names[1]
-  map_public_ip_on_launch = true
-
-  tags = {
-    Name = "shopaura-public-subnet-2"
->>>>>>> 01ff45a (your commit message)
   }
 }
 
@@ -105,7 +68,6 @@ resource "aws_route_table" "public" {
   }
 }
 
-<<<<<<< HEAD
 resource "aws_route_table_association" "public" {
   count          = 2
   subnet_id      = aws_subnet.public[count.index].id
@@ -115,21 +77,6 @@ resource "aws_route_table_association" "public" {
 # ECR Repositories
 resource "aws_ecr_repository" "backend" {
   name                 = "shopaura-backend"
-=======
-resource "aws_route_table_association" "public_1" {
-  subnet_id      = aws_subnet.public_1.id
-  route_table_id = aws_route_table.public.id
-}
-
-resource "aws_route_table_association" "public_2" {
-  subnet_id      = aws_subnet.public_2.id
-  route_table_id = aws_route_table.public.id
-}
-
-# ECR Repositories - Free for 12 months (500MB each)
-resource "aws_ecr_repository" "backend" {
-  name                 = "shopaura-backend-free"
->>>>>>> 01ff45a (your commit message)
   image_tag_mutability = "MUTABLE"
 
   image_scanning_configuration {
@@ -138,11 +85,7 @@ resource "aws_ecr_repository" "backend" {
 }
 
 resource "aws_ecr_repository" "frontend" {
-<<<<<<< HEAD
   name                 = "shopaura-frontend"
-=======
-  name                 = "shopaura-frontend-free"
->>>>>>> 01ff45a (your commit message)
   image_tag_mutability = "MUTABLE"
 
   image_scanning_configuration {
@@ -150,7 +93,6 @@ resource "aws_ecr_repository" "frontend" {
   }
 }
 
-<<<<<<< HEAD
 # ECS Cluster
 resource "aws_ecs_cluster" "main" {
   name = "shopaura-cluster"
@@ -168,25 +110,6 @@ resource "aws_ecs_task_definition" "backend" {
   requires_compatibilities = ["FARGATE"]
   cpu                      = 256
   memory                   = 512
-=======
-# ECS Cluster - Free
-resource "aws_ecs_cluster" "main" {
-  name = "shopaura-cluster-free"
-
-  setting {
-    name  = "containerInsights"
-    value = "disabled" # Disable to save costs
-  }
-}
-
-# ECS Task Definition - Backend (Free Tier Optimized)
-resource "aws_ecs_task_definition" "backend" {
-  family                   = "shopaura-backend-task-free"
-  network_mode             = "awsvpc"
-  requires_compatibilities = ["FARGATE"]
-  cpu                      = 512  # Increased from 256
-  memory                   = 1024 # Increased from 512
->>>>>>> 01ff45a (your commit message)
   execution_role_arn       = aws_iam_role.ecs_execution_role.arn
   task_role_arn            = aws_iam_role.ecs_task_role.arn
 
@@ -194,68 +117,18 @@ resource "aws_ecs_task_definition" "backend" {
     {
       name  = "backend"
       image = "${aws_ecr_repository.backend.repository_url}:latest"
-<<<<<<< HEAD
-=======
-      
->>>>>>> 01ff45a (your commit message)
       portMappings = [
         {
           containerPort = 8080
           protocol      = "tcp"
         }
       ]
-<<<<<<< HEAD
-=======
-
->>>>>>> 01ff45a (your commit message)
       environment = [
         {
           name  = "SPRING_PROFILES_ACTIVE"
           value = "production"
-<<<<<<< HEAD
         }
       ]
-=======
-        },
-        {
-          name  = "SPRING_DATASOURCE_URL"
-          value = "jdbc:h2:mem:testdb"
-        },
-        {
-          name  = "SPRING_DATASOURCE_DRIVER_CLASS_NAME"
-          value = "org.h2.Driver"
-        },
-        {
-          name  = "SPRING_JPA_HIBERNATE_DDL_AUTO"
-          value = "create-drop"
-        },
-        {
-          name  = "SPRING_H2_CONSOLE_ENABLED"
-          value = "true"
-        },
-        {
-          name  = "CLOUDINARY_CLOUD_NAME"
-          value = "dcirtkmte"
-        },
-        {
-          name  = "CLOUDINARY_API_KEY"
-          value = "696832298922636"
-        },
-        {
-          name  = "CLOUDINARY_API_SECRET"
-          value = "5YgN9mfB7zdDjWZNKukuhoWcRog"
-        },
-        {
-          name  = "SPRING_CACHE_TYPE"
-          value = "none"
-        },
-        {
-          name  = "SPRING_DATA_REDIS_ENABLED"
-          value = "false"
-        }
-      ]
-
->>>>>>> 01ff45a (your commit message)
       logConfiguration = {
         logDriver = "awslogs"
         options = {
@@ -264,31 +137,16 @@ resource "aws_ecs_task_definition" "backend" {
           awslogs-stream-prefix = "ecs"
         }
       }
-<<<<<<< HEAD
-=======
-
-      essential = true
->>>>>>> 01ff45a (your commit message)
     }
   ])
 }
 
-<<<<<<< HEAD
 resource "aws_ecs_task_definition" "frontend" {
   family                   = "shopaura-frontend-task"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = 256
   memory                   = 512
-=======
-# ECS Task Definition - Frontend (Free Tier Optimized)
-resource "aws_ecs_task_definition" "frontend" {
-  family                   = "shopaura-frontend-task-free"
-  network_mode             = "awsvpc"
-  requires_compatibilities = ["FARGATE"]
-  cpu                      = 512  # Increased from 256
-  memory                   = 1024 # Increased from 512
->>>>>>> 01ff45a (your commit message)
   execution_role_arn       = aws_iam_role.ecs_execution_role.arn
   task_role_arn            = aws_iam_role.ecs_task_role.arn
 
@@ -296,20 +154,12 @@ resource "aws_ecs_task_definition" "frontend" {
     {
       name  = "frontend"
       image = "${aws_ecr_repository.frontend.repository_url}:latest"
-<<<<<<< HEAD
-=======
-      
->>>>>>> 01ff45a (your commit message)
       portMappings = [
         {
           containerPort = 80
           protocol      = "tcp"
         }
       ]
-<<<<<<< HEAD
-=======
-
->>>>>>> 01ff45a (your commit message)
       logConfiguration = {
         logDriver = "awslogs"
         options = {
@@ -318,16 +168,10 @@ resource "aws_ecs_task_definition" "frontend" {
           awslogs-stream-prefix = "ecs"
         }
       }
-<<<<<<< HEAD
-=======
-
-      essential = true
->>>>>>> 01ff45a (your commit message)
     }
   ])
 }
 
-<<<<<<< HEAD
 # ECS Services
 resource "aws_ecs_service" "backend" {
   name            = "shopaura-backend-service"
@@ -339,20 +183,6 @@ resource "aws_ecs_service" "backend" {
   network_configuration {
     subnets         = aws_subnet.private[*].id
     security_groups = [aws_security_group.ecs_tasks.id]
-=======
-# ECS Service - Backend
-resource "aws_ecs_service" "backend" {
-  name            = "shopaura-backend-service-free"
-  cluster         = aws_ecs_cluster.main.id
-  task_definition = aws_ecs_task_definition.backend.arn
-  desired_count   = 1  # Minimum for free tier
-  launch_type     = "FARGATE"
-
-  network_configuration {
-    subnets          = [aws_subnet.public_1.id]
-    security_groups  = [aws_security_group.ecs_tasks.id]
-    assign_public_ip = true
->>>>>>> 01ff45a (your commit message)
   }
 
   load_balancer {
@@ -364,7 +194,6 @@ resource "aws_ecs_service" "backend" {
   depends_on = [aws_lb_listener.backend]
 }
 
-<<<<<<< HEAD
 resource "aws_ecs_service" "frontend" {
   name            = "shopaura-frontend-service"
   cluster         = aws_ecs_cluster.main.id
@@ -375,20 +204,6 @@ resource "aws_ecs_service" "frontend" {
   network_configuration {
     subnets         = aws_subnet.private[*].id
     security_groups = [aws_security_group.ecs_tasks.id]
-=======
-# ECS Service - Frontend
-resource "aws_ecs_service" "frontend" {
-  name            = "shopaura-frontend-service-free"
-  cluster         = aws_ecs_cluster.main.id
-  task_definition = aws_ecs_task_definition.frontend.arn
-  desired_count   = 1  # Minimum for free tier
-  launch_type     = "FARGATE"
-
-  network_configuration {
-    subnets          = [aws_subnet.public_1.id]
-    security_groups  = [aws_security_group.ecs_tasks.id]
-    assign_public_ip = true
->>>>>>> 01ff45a (your commit message)
   }
 
   load_balancer {
@@ -400,7 +215,6 @@ resource "aws_ecs_service" "frontend" {
   depends_on = [aws_lb_listener.frontend]
 }
 
-<<<<<<< HEAD
 # Application Load Balancer
 resource "aws_lb" "main" {
   name               = "shopaura-alb"
@@ -408,33 +222,15 @@ resource "aws_lb" "main" {
   load_balancer_type = "application"
   security_groups    = [aws_security_group.alb.id]
   subnets            = aws_subnet.public[*].id
-=======
-# Application Load Balancer - Free for 12 months
-resource "aws_lb" "main" {
-  name               = "shopaura-alb-free"
-  internal           = false
-  load_balancer_type = "application"
-  security_groups    = [aws_security_group.alb.id]
-  subnets            = [aws_subnet.public_1.id, aws_subnet.public_2.id]
->>>>>>> 01ff45a (your commit message)
 
   enable_deletion_protection = false
 }
 
-<<<<<<< HEAD
 resource "aws_lb_target_group" "backend" {
   name     = "shopaura-backend-tg"
   port     = 8080
   protocol = "HTTP"
   vpc_id   = aws_vpc.main.id
-=======
-# Target Groups
-resource "aws_lb_target_group" "backend" {
-  name        = "shopaura-backend-tg-free"
-  port        = 8080
-  protocol    = "HTTP"
-  vpc_id      = aws_vpc.main.id
->>>>>>> 01ff45a (your commit message)
   target_type = "ip"
 
   health_check {
@@ -442,34 +238,19 @@ resource "aws_lb_target_group" "backend" {
     healthy_threshold   = 2
     interval            = 30
     matcher             = "200"
-<<<<<<< HEAD
     path                = "/actuator/health"
     port                = "traffic-port"
     protocol            = "HTTP"
     timeout             = 5
     unhealthy_threshold = 2
-=======
-    path                = "/api/categories"  # Changed from /actuator/health
-    port                = "traffic-port"
-    protocol            = "HTTP"
-    timeout             = 10  # Increased from 5
-    unhealthy_threshold = 3   # Increased from 2
->>>>>>> 01ff45a (your commit message)
   }
 }
 
 resource "aws_lb_target_group" "frontend" {
-<<<<<<< HEAD
   name     = "shopaura-frontend-tg"
   port     = 80
   protocol = "HTTP"
   vpc_id   = aws_vpc.main.id
-=======
-  name        = "shopaura-frontend-tg-free"
-  port        = 80
-  protocol    = "HTTP"
-  vpc_id      = aws_vpc.main.id
->>>>>>> 01ff45a (your commit message)
   target_type = "ip"
 
   health_check {
@@ -477,7 +258,6 @@ resource "aws_lb_target_group" "frontend" {
     healthy_threshold   = 2
     interval            = 30
     matcher             = "200"
-<<<<<<< HEAD
     path                = "/"
     port                = "traffic-port"
     protocol            = "HTTP"
@@ -486,17 +266,6 @@ resource "aws_lb_target_group" "frontend" {
   }
 }
 
-=======
-    path                = "/"  # Keep as root path
-    port                = "traffic-port"
-    protocol            = "HTTP"
-    timeout             = 10  # Increased from 5
-    unhealthy_threshold = 3   # Increased from 2
-  }
-}
-
-# Listeners
->>>>>>> 01ff45a (your commit message)
 resource "aws_lb_listener" "backend" {
   load_balancer_arn = aws_lb.main.arn
   port              = "8080"
@@ -521,7 +290,6 @@ resource "aws_lb_listener" "frontend" {
 
 # Security Groups
 resource "aws_security_group" "alb" {
-<<<<<<< HEAD
   name_prefix = "shopaura-alb-"
   vpc_id      = aws_vpc.main.id
 
@@ -529,48 +297,25 @@ resource "aws_security_group" "alb" {
     protocol    = "tcp"
     from_port   = 80
     to_port     = 80
-=======
-  name        = "shopaura-alb-sg-free"
-  description = "Security group for ALB"
-  vpc_id      = aws_vpc.main.id
-
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
->>>>>>> 01ff45a (your commit message)
     cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
-<<<<<<< HEAD
     protocol    = "tcp"
     from_port   = 8080
     to_port     = 8080
-=======
-    from_port   = 8080
-    to_port     = 8080
-    protocol    = "tcp"
->>>>>>> 01ff45a (your commit message)
     cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
-<<<<<<< HEAD
     protocol    = "-1"
     from_port   = 0
     to_port     = 0
-=======
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
->>>>>>> 01ff45a (your commit message)
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
 
 resource "aws_security_group" "ecs_tasks" {
-<<<<<<< HEAD
   name_prefix = "shopaura-ecs-tasks-"
   vpc_id      = aws_vpc.main.id
 
@@ -578,53 +323,27 @@ resource "aws_security_group" "ecs_tasks" {
     protocol        = "tcp"
     from_port       = 8080
     to_port         = 8080
-=======
-  name        = "shopaura-ecs-sg-free"
-  description = "Security group for ECS tasks"
-  vpc_id      = aws_vpc.main.id
-
-  ingress {
-    from_port       = 8080
-    to_port         = 8080
-    protocol        = "tcp"
->>>>>>> 01ff45a (your commit message)
     security_groups = [aws_security_group.alb.id]
   }
 
   ingress {
-<<<<<<< HEAD
     protocol        = "tcp"
     from_port       = 80
     to_port         = 80
-=======
-    from_port       = 80
-    to_port         = 80
-    protocol        = "tcp"
->>>>>>> 01ff45a (your commit message)
     security_groups = [aws_security_group.alb.id]
   }
 
   egress {
-<<<<<<< HEAD
     protocol    = "-1"
     from_port   = 0
     to_port     = 0
-=======
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
->>>>>>> 01ff45a (your commit message)
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
 
 # IAM Roles
 resource "aws_iam_role" "ecs_execution_role" {
-<<<<<<< HEAD
   name = "shopaura-ecs-execution-role"
-=======
-  name = "shopaura-ecs-execution-role-free"
->>>>>>> 01ff45a (your commit message)
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -646,11 +365,7 @@ resource "aws_iam_role_policy_attachment" "ecs_execution_role_policy" {
 }
 
 resource "aws_iam_role" "ecs_task_role" {
-<<<<<<< HEAD
   name = "shopaura-ecs-task-role"
-=======
-  name = "shopaura-ecs-task-role-free"
->>>>>>> 01ff45a (your commit message)
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -666,7 +381,6 @@ resource "aws_iam_role" "ecs_task_role" {
   })
 }
 
-<<<<<<< HEAD
 # CloudWatch Log Groups
 resource "aws_cloudwatch_log_group" "backend" {
   name              = "/ecs/shopaura-backend"
@@ -676,17 +390,6 @@ resource "aws_cloudwatch_log_group" "backend" {
 resource "aws_cloudwatch_log_group" "frontend" {
   name              = "/ecs/shopaura-frontend"
   retention_in_days = 30
-=======
-# CloudWatch Log Groups - Free tier includes 5GB
-resource "aws_cloudwatch_log_group" "backend" {
-  name              = "/aws/ecs/shopaura-backend-free"
-  retention_in_days = 7  # Keep logs for 7 days to save costs
-}
-
-resource "aws_cloudwatch_log_group" "frontend" {
-  name              = "/aws/ecs/shopaura-frontend-free"
-  retention_in_days = 7  # Keep logs for 7 days to save costs
->>>>>>> 01ff45a (your commit message)
 }
 
 # Data Sources
@@ -696,7 +399,6 @@ data "aws_availability_zones" "available" {
 
 # Outputs
 output "alb_dns_name" {
-<<<<<<< HEAD
   value = aws_lb.main.dns_name
 }
 
@@ -707,28 +409,3 @@ output "backend_url" {
 output "frontend_url" {
   value = "http://${aws_lb.main.dns_name}"
 }
-=======
-  description = "DNS name of the load balancer"
-  value       = aws_lb.main.dns_name
-}
-
-output "backend_url" {
-  description = "Backend service URL"
-  value       = "http://${aws_lb.main.dns_name}:8080"
-}
-
-output "frontend_url" {
-  description = "Frontend service URL"
-  value       = "http://${aws_lb.main.dns_name}"
-}
-
-output "ecr_backend_url" {
-  description = "Backend ECR repository URL"
-  value       = aws_ecr_repository.backend.repository_url
-}
-
-output "ecr_frontend_url" {
-  description = "Frontend ECR repository URL"
-  value       = aws_ecr_repository.frontend.repository_url
-} 
->>>>>>> 01ff45a (your commit message)
