@@ -1,15 +1,11 @@
 # Set default behavior to automatically normalize line endings
 * text=auto
 
-<<<<<<< HEAD
-=======
 # Ignore terraform provider binaries
 **/terraform-provider-aws_*.exe
 infrastructure/.terraform/
 infrastructure/terraform.tfstate*
 
-
->>>>>>> 01ff45a (your commit message)
 # Explicitly declare text files you want to always be normalized and converted
 # to native line endings on checkout
 *.java text eol=lf
@@ -51,4 +47,4 @@ infrastructure/terraform.tfstate*
 *.exe binary
 *.dll binary
 *.so binary
-*.dylib binary 
+*.dylib binary
