@@ -35,6 +35,35 @@ ShopAura is a modern, full-stack e-commerce web application featuring a robust S
 
 ---
 
+
+## 📸 Screenshots
+
+### Homepage
+![Homepage](screenshots/home.png)(screenshots/home2.png)
+
+
+### Product List
+![Product List](/products.png)
+
+### Product Details
+![Product Details](/product-details.png)
+
+### Cart
+![Cart](/cart.png)
+
+### Login
+![Login](/login.png)
+
+### Register
+![Register](/register.png)
+
+### Orders
+![Orders](/orders.png)
+
+### Profile
+![Profile](/profile.png)
+
+
 ## ⚙️ Setup Instructions
 
 ### Backend
@@ -93,9 +122,3 @@ ShopAura is a modern, full-stack e-commerce web application featuring a robust S
 
 ## 📄 License
 This project is for educational purposes. Feel free to contribute or use this project as a base for a full-fledged e-commerce application!
-
-
-
-
-
-

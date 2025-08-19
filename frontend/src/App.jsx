@@ -406,7 +406,7 @@ function Home() {
         </Box>
         <Box sx={{ display: { xs: 'none', md: 'block' } }}>
           {/* You can replace this with a product/category image if desired */}
-          <img src="https://images.pexels.com/photos/374870/pexels-photo-374870.jpeg?auto=compress&w=400" alt="ShopAura Banner" style={{ borderRadius: 16, width: 320, boxShadow: '0 8px 32px rgba(0,0,0,0.18)' }} />
+          <img src="/shopaurabanner.jpg" alt="ShopAura Banner" style={{ borderRadius: 16, width: 320, boxShadow: '0 8px 32px rgba(0,0,0,0.18)' }} />
         </Box>
       </Box>
 
