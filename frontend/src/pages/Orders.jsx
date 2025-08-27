@@ -24,20 +24,25 @@ export default function Orders() {
         setOrders(res.data);
         setLoading(false);
       })
-      .catch(() => {
-        setError('Failed to fetch orders');
+      .catch((err) => {
+        if (err.response && (err.response.status === 404 || err.response.status === 204)) {
+          setOrders([]); // No orders found
+        } else {
+          setError('Failed to fetch orders');
+        }
         setLoading(false);
       });
   }, [isAuthenticated, token, navigate]);
 
   if (loading) return <Box display="flex" justifyContent="center" mt={4}><CircularProgress /></Box>;
-  if (error) return <Alert severity="error">{error}</Alert>;
 
   return (
     <Box mt={2}>
       <Typography variant="h4" gutterBottom>Order History</Typography>
       {orders.length === 0 ? (
-        <Typography>No orders found.</Typography>
+        <Typography>Your orders are empty.</Typography>
+      ) : error ? (
+        <Alert severity="error">{error}</Alert>
       ) : (
         <Grid container spacing={2}>
           {orders.map(order => (
