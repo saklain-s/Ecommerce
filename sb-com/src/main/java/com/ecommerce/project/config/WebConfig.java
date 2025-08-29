@@ -13,7 +13,12 @@ public class WebConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/api/**")
-                        .allowedOrigins("http://localhost:5173")
+                        .allowedOrigins(
+                            "http://localhost:5173",  // Vite dev server
+                            "http://localhost:3000",  // Alternative dev port
+                            "http://localhost:80",    // Docker frontend
+                            "http://localhost"        // Docker frontend (no port)
+                        )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);
