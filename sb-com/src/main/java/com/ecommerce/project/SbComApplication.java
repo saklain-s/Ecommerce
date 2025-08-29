@@ -23,8 +23,15 @@ import java.util.Optional;
 public class SbComApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SbComApplication.class, args);
-        
+		try {
+			System.out.println("Starting ShopAura Ecommerce Application...");
+			SpringApplication.run(SbComApplication.class, args);
+			System.out.println("ShopAura Application started successfully!");
+		} catch (Exception e) {
+			System.err.println("Failed to start ShopAura Application: " + e.getMessage());
+			e.printStackTrace();
+			System.exit(1);
+		}
 	}
    
 	@Bean
@@ -33,18 +40,24 @@ public class SbComApplication {
 			try {
 				if (categoryRepository.count() == 0) {
 					System.out.println("Initializing default categories...");
-					categoryRepository.save(new Category(null, "Electronics"));
-					categoryRepository.save(new Category(null, "Fashion"));
-					categoryRepository.save(new Category(null, "Home"));
-					categoryRepository.save(new Category(null, "Books"));
-					categoryRepository.save(new Category(null, "Sports"));
-					categoryRepository.save(new Category(null, "Beauty"));
-					categoryRepository.save(new Category(null, "Toys"));
-					categoryRepository.save(new Category(null, "Grocery"));
-					System.out.println("Default categories initialized successfully!");
+					List<Category> categories = List.of(
+						new Category(null, "Electronics"),
+						new Category(null, "Fashion"),
+						new Category(null, "Home"),
+						new Category(null, "Books"),
+						new Category(null, "Sports"),
+						new Category(null, "Beauty"),
+						new Category(null, "Toys"),
+						new Category(null, "Grocery")
+					);
+					categoryRepository.saveAll(categories);
+					System.out.println("Default categories initialized successfully! Count: " + categories.size());
+				} else {
+					System.out.println("Categories already exist. Count: " + categoryRepository.count());
 				}
 			} catch (Exception e) {
-				System.out.println("Error initializing categories: " + e.getMessage());
+				System.err.println("Error initializing categories: " + e.getMessage());
+				e.printStackTrace();
 			}
 		};
 	}

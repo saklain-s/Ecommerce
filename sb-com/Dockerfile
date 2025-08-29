@@ -1,9 +1,5 @@
 # Multi-stage build for Spring Boot application
-<<<<<<< HEAD
-FROM maven:3.9.6-openjdk-21 AS build
-=======
 FROM maven:3.9.6-eclipse-temurin-21 AS build
->>>>>>> 01ff45a (your commit message)
 
 # Set working directory
 WORKDIR /app
@@ -19,11 +15,10 @@ COPY src ./src
 RUN mvn clean package -DskipTests
 
 # Runtime stage
-<<<<<<< HEAD
-FROM openjdk:21-jre-slim
-=======
 FROM eclipse-temurin:21-jre-jammy
->>>>>>> 01ff45a (your commit message)
+
+# Install curl for health checks
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
 WORKDIR /app

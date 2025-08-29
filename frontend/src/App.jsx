@@ -92,9 +92,11 @@ function Home() {
   const { addToCart } = useCart();
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
   useEffect(() => {
-    axios.get('http://localhost:8080/api/products')
-      .then(res => { setProducts(res.data.slice(0, 8)); setLoading(false); })
-      .catch(() => setLoading(false));
+    import('./api/config.js').then(({ API_ENDPOINTS }) => {
+      axios.get(API_ENDPOINTS.PRODUCTS)
+        .then(res => { setProducts(res.data.slice(0, 8)); setLoading(false); })
+        .catch(() => setLoading(false));
+    });
   }, []);
 
   // Featured items for each category (using online images)

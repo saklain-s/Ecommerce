@@ -13,6 +13,13 @@ services:
     command: redis-server --appendonly yes
     networks:
       - shopaura-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
 
   # Backend Service (Spring Boot)
   backend:
@@ -27,13 +34,22 @@ services:
       - SPRING_REDIS_HOST=redis
       - SPRING_REDIS_PORT=6379
       - SPRING_DATASOURCE_URL=jdbc:h2:mem:testdb
-      - SPRING_DATASOURCE_DRIVERCLASSNAME=org.h2.Driver
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.h2.Driver
       - SPRING_H2_CONSOLE_ENABLED=true
+      - CORS_ALLOWED_ORIGINS=http://localhost:80,http://localhost
+      - SPRING_CACHE_TYPE=redis
     depends_on:
-      - redis
+      redis:
+        condition: service_healthy
     networks:
       - shopaura-network
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   # Frontend Service (React)
   frontend:

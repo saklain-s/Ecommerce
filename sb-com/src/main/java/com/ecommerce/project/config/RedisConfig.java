@@ -14,18 +14,28 @@ public class RedisConfig {
 
     @Bean
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
-        RedisTemplate<String, Object> template = new RedisTemplate<>();
-        template.setConnectionFactory(connectionFactory);
-        
-        // Use String serializer for keys
-        template.setKeySerializer(new StringRedisSerializer());
-        template.setHashKeySerializer(new StringRedisSerializer());
-        
-        // Use JSON serializer for values
-        template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
-        template.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
-        
-        template.afterPropertiesSet();
-        return template;
+        try {
+            RedisTemplate<String, Object> template = new RedisTemplate<>();
+            template.setConnectionFactory(connectionFactory);
+            
+            // Use String serializer for keys
+            template.setKeySerializer(new StringRedisSerializer());
+            template.setHashKeySerializer(new StringRedisSerializer());
+            
+            // Use JSON serializer for values
+            template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+            template.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
+            
+            template.afterPropertiesSet();
+            
+            // Test connection
+            template.getConnectionFactory().getConnection().ping();
+            System.out.println("Redis connection established successfully");
+            
+            return template;
+        } catch (Exception e) {
+            System.err.println("Failed to configure Redis: " + e.getMessage());
+            throw new RuntimeException("Redis configuration failed", e);
+        }
     }
 } 
