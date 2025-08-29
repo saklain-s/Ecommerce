@@ -13,7 +13,7 @@ export default function Orders() {
 
   useEffect(() => {
     if (!isAuthenticated) {
-      navigate('/login');
+      navigate('/login', { state: { from: '/orders', message: 'Please log in to view your orders' } });
       return;
     }
     const userId = JSON.parse(atob(token.split('.')[1])).sub || 1;
@@ -33,6 +33,11 @@ export default function Orders() {
         setLoading(false);
       });
   }, [isAuthenticated, token, navigate]);
+
+  // Don't render orders content if not authenticated
+  if (!isAuthenticated) {
+    return null;
+  }
 
   if (loading) return <Box display="flex" justifyContent="center" mt={4}><CircularProgress /></Box>;
 

@@ -42,8 +42,17 @@ export default function Register() {
 
   return (
     <Box mt={4} display="flex" justifyContent="center">
-      <Paper sx={{ p: 4, minWidth: 320 }}>
-        <Typography variant="h5" gutterBottom>Register</Typography>
+      <Paper sx={{ 
+        p: 4, 
+        width: '100%', 
+        maxWidth: 400,
+        mx: 2,
+        boxShadow: 3,
+        borderRadius: 2
+      }}>
+        <Typography variant="h5" gutterBottom align="center" sx={{ mb: 3 }}>
+          Create Account
+        </Typography>
         <form onSubmit={handleSubmit}>
           <TextField
             label="Username"
@@ -52,6 +61,7 @@ export default function Register() {
             fullWidth
             margin="normal"
             required
+            sx={{ mb: 2 }}
           />
           <TextField
             label="Email"
@@ -60,6 +70,7 @@ export default function Register() {
             fullWidth
             margin="normal"
             required
+            sx={{ mb: 2 }}
           />
           <TextField
             label="Password"
@@ -69,33 +80,65 @@ export default function Register() {
             fullWidth
             margin="normal"
             required
+            sx={{ mb: 2 }}
           />
           <TextField
-            label="Role"
+            label="Account Type"
             select
             value={role}
             onChange={e => setRole(e.target.value)}
             fullWidth
             margin="normal"
+            sx={{ mb: 2 }}
+            helperText={role === 'SELLER' ? 'Sellers can add and manage products' : 'Customers can browse and purchase products'}
           >
             <MenuItem value="CUSTOMER">Customer</MenuItem>
             <MenuItem value="SELLER">Seller</MenuItem>
           </TextField>
           {role === 'SELLER' && (
-            <TextField
-              label="PAN Number"
-              value={panNumber}
-              onChange={handlePanChange}
-              fullWidth
-              margin="normal"
-              required
-              inputProps={{ maxLength: 10 }}
-              helperText="Enter your PAN (uppercase letters and numbers only)"
-            />
+            <Box sx={{ 
+              mt: 2, 
+              p: 2, 
+              bgcolor: 'primary.50', 
+              borderRadius: 1,
+              border: '1px solid',
+              borderColor: 'primary.200',
+              transition: 'all 0.3s ease-in-out',
+              transform: 'scale(1)',
+              opacity: 1
+            }}>
+              <Typography variant="subtitle2" sx={{ mb: 1, color: 'primary.main', fontWeight: 600 }}>
+                Seller Information
+              </Typography>
+              <TextField
+                label="PAN Number"
+                value={panNumber}
+                onChange={handlePanChange}
+                fullWidth
+                margin="normal"
+                required
+                inputProps={{ maxLength: 10 }}
+                helperText="Enter your PAN (uppercase letters and numbers only)"
+                sx={{ mb: 1 }}
+              />
+            </Box>
           )}
-          {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
-          <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
-            Register
+          {error && <Alert severity="error" sx={{ mt: 3, mb: 2 }}>{error}</Alert>}
+          <Button 
+            type="submit" 
+            variant="contained" 
+            color="primary" 
+            fullWidth 
+            sx={{ 
+              mt: 3, 
+              mb: 1,
+              py: 1.5,
+              fontSize: '1.1rem',
+              fontWeight: 600,
+              borderRadius: 2
+            }}
+          >
+            Create Account
           </Button>
         </form>
       </Paper>

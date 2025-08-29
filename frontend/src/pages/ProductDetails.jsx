@@ -27,9 +27,17 @@ export default function ProductDetails() {
   }, [id]);
 
   const handleAddToCart = () => {
-    addToCart(product, 1);
-    setAdded(true);
-    setTimeout(() => setAdded(false), 1500);
+    try {
+      addToCart(product, 1);
+      setAdded(true);
+      setTimeout(() => setAdded(false), 1500);
+    } catch (error) {
+      if (error.message.includes('logged in')) {
+        navigate('/login', { state: { from: `/products/${id}`, message: 'Please log in to add items to cart' } });
+      } else {
+        setError('Failed to add to cart');
+      }
+    }
   };
 
   if (loading) return <Box display="flex" justifyContent="center" mt={4}><CircularProgress /></Box>;

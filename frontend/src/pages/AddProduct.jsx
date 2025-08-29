@@ -25,13 +25,22 @@ export default function AddProduct() {
   }, []);
 
   useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/login', { state: { from: '/add-product', message: 'Please log in to add products' } });
+      return;
+    }
     if (isAuthenticated && token) {
       const payload = JSON.parse(atob(token.split('.')[1]));
       setRole(payload.role || 'CUSTOMER');
     } else {
       setRole('CUSTOMER');
     }
-  }, [isAuthenticated, token]);
+  }, [isAuthenticated, token, navigate]);
+
+  // Don't render content if not authenticated
+  if (!isAuthenticated) {
+    return null;
+  }
 
   if (role !== 'SELLER') return <Typography>You do not have permission to add products.</Typography>;
 

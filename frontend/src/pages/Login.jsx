@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { Box, Typography, TextField, Button, Alert, Paper } from '@mui/material';
 import { useAuth } from '../context/AuthContext';
@@ -8,8 +8,17 @@ export default function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
+  const [message, setMessage] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
   const { login } = useAuth();
+
+  // Check if redirected from cart or other protected pages
+  useEffect(() => {
+    if (location.state?.message) {
+      setMessage(location.state.message);
+    }
+  }, [location.state]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,7 +26,10 @@ export default function Login() {
     try {
       const res = await axios.post('http://localhost:8080/api/users/login', { username, password });
       login(res.data.token);
-      navigate('/');
+      
+      // Redirect to the page they were trying to access, or home
+      const from = location.state?.from || '/';
+      navigate(from);
     } catch (err) {
       setError('Invalid username or password');
     }
@@ -27,6 +39,7 @@ export default function Login() {
     <Box mt={4} display="flex" justifyContent="center">
       <Paper sx={{ p: 4, minWidth: 320 }}>
         <Typography variant="h5" gutterBottom>Login</Typography>
+        {message && <Alert severity="info" sx={{ mb: 2 }}>{message}</Alert>}
         <form onSubmit={handleSubmit}>
           <TextField
             label="Username"

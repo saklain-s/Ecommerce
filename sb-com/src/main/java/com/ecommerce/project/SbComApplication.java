@@ -25,6 +25,7 @@ public class SbComApplication {
 	public static void main(String[] args) {
 		try {
 			System.out.println("Starting ShopAura Ecommerce Application...");
+			System.out.println("Cache type: " + System.getProperty("spring.cache.type", "simple"));
 			SpringApplication.run(SbComApplication.class, args);
 			System.out.println("ShopAura Application started successfully!");
 		} catch (Exception e) {

@@ -447,8 +447,16 @@ function Home() {
                       size="small"
                       sx={{ mt: 2, fontWeight: 700, borderRadius: 3, boxShadow: 1, textTransform: 'none' }}
                       onClick={() => {
-                        addToCart(item, 1);
-                        setSnackbar({ open: true, message: `${item.title} added to cart!`, severity: 'success' });
+                        try {
+                          addToCart(item, 1);
+                          setSnackbar({ open: true, message: `${item.title} added to cart!`, severity: 'success' });
+                        } catch (error) {
+                          if (error.message.includes('logged in')) {
+                            navigate('/login', { state: { from: '/', message: 'Please log in to add items to cart' } });
+                          } else {
+                            setSnackbar({ open: true, message: 'Failed to add to cart', severity: 'error' });
+                          }
+                        }
                       }}
                     >
                       Add to Cart
@@ -509,7 +517,7 @@ function Home() {
 }
 
 function Navbar() {
-  const { items } = useCart();
+  const { items, clearCart } = useCart();
   const { isAuthenticated, logout, username, role } = useAuth();
   const totalQty = items.reduce((sum, i) => sum + i.quantity, 0);
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -527,6 +535,8 @@ function Navbar() {
   const handleLogout = () => {
     logout();
     handleClose();
+    // Clear cart when logging out
+    clearCart();
     navigate('/');
   };
   return (
@@ -554,15 +564,47 @@ function Navbar() {
         </Box>
         <Button color="inherit" component={Link} to="/" sx={{ mx: 1, fontWeight: 600, '&:hover': { color: 'secondary.main' } }}>Home</Button>
         <Button color="inherit" component={Link} to="/products" sx={{ mx: 1, fontWeight: 600, '&:hover': { color: 'secondary.main' } }}>Products</Button>
-        <IconButton color="inherit" component={Link} to="/cart" sx={{ mx: 1, '&:hover': { color: 'secondary.main' } }}>
+        <IconButton 
+          color="inherit" 
+          onClick={() => {
+            if (isAuthenticated) {
+              navigate('/cart');
+            } else {
+              navigate('/login', { state: { from: '/cart', message: 'Please log in to view your cart' } });
+            }
+          }}
+          sx={{ mx: 1, '&:hover': { color: 'secondary.main' } }}
+        >
           <Badge badgeContent={totalQty} color="secondary">
             <ShoppingCartIcon />
           </Badge>
         </IconButton>
-        <Button color="inherit" component={Link} to="/orders" sx={{ mx: 1, fontWeight: 600, '&:hover': { color: 'secondary.main' } }}>Orders</Button>
-        {isAuthenticated && (
-          <Button color="inherit" component={Link} to="/profile" sx={{ mx: 1, fontWeight: 600, '&:hover': { color: 'secondary.main' } }}>Profile</Button>
-        )}
+        <Button 
+          color="inherit" 
+          onClick={() => {
+            if (isAuthenticated) {
+              navigate('/orders');
+            } else {
+              navigate('/login', { state: { from: '/orders', message: 'Please log in to view your orders' } });
+            }
+          }}
+          sx={{ mx: 1, fontWeight: 600, '&:hover': { color: 'secondary.main' } }}
+        >
+          Orders
+        </Button>
+        <Button 
+          color="inherit" 
+          onClick={() => {
+            if (isAuthenticated) {
+              navigate('/profile');
+            } else {
+              navigate('/login', { state: { from: '/profile', message: 'Please log in to view your profile' } });
+            }
+          }}
+          sx={{ mx: 1, fontWeight: 600, '&:hover': { color: 'secondary.main' } }}
+        >
+          Profile
+        </Button>
         {isAuthenticated ? (
           <>
             <Button color="inherit" onClick={handleMenu} sx={{ mx: 1, fontWeight: 600, '&:hover': { color: 'secondary.main' } }}>{username || 'User'}</Button>

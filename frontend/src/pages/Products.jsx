@@ -112,8 +112,16 @@ export default function Products() {
                   <ProductCard
                     product={product}
                     onAddToCart={p => {
-                      addToCart(p, 1);
-                      setSnackbar({ open: true, message: `${p.name} added to cart!`, severity: 'success' });
+                      try {
+                        addToCart(p, 1);
+                        setSnackbar({ open: true, message: `${p.name} added to cart!`, severity: 'success' });
+                      } catch (error) {
+                        if (error.message.includes('logged in')) {
+                          navigate('/login', { state: { from: '/products', message: 'Please log in to add items to cart' } });
+                        } else {
+                          setSnackbar({ open: true, message: 'Failed to add to cart', severity: 'error' });
+                        }
+                      }
                     }}
                   />
                 </Link>

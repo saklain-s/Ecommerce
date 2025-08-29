@@ -15,6 +15,18 @@ export default function Cart() {
   const [error, setError] = useState(null);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
 
+  // Redirect to login if not authenticated
+  React.useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/login', { state: { from: '/cart', message: 'Please log in to view your cart' } });
+    }
+  }, [isAuthenticated, navigate]);
+
+  // Don't render cart content if not authenticated
+  if (!isAuthenticated) {
+    return null;
+  }
+
   const handleQtyChange = (productId, value) => {
     const qty = parseInt(value, 10);
     if (!isNaN(qty) && qty > 0) {

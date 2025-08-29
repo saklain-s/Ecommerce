@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
+import { useAuth } from './AuthContext';
 
 const CartContext = createContext();
 
@@ -45,8 +46,13 @@ function cartReducer(state, action) {
 }
 
 export function CartProvider({ children }) {
-  // Load cart from localStorage on initialization
+  const { isAuthenticated } = useAuth();
+  
+  // Load cart from localStorage on initialization (only if authenticated)
   const loadCartFromStorage = () => {
+    if (!isAuthenticated) {
+      return initialState;
+    }
     try {
       const savedCart = localStorage.getItem('cart');
       return savedCart ? JSON.parse(savedCart) : initialState;
@@ -58,21 +64,38 @@ export function CartProvider({ children }) {
 
   const [state, dispatch] = useReducer(cartReducer, loadCartFromStorage());
 
-  // Save cart to localStorage whenever it changes
+  // Save cart to localStorage whenever it changes (only if authenticated)
   useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(state));
-  }, [state]);
+    if (isAuthenticated) {
+      localStorage.setItem('cart', JSON.stringify(state));
+    } else {
+      // Clear cart from localStorage when not authenticated
+      localStorage.removeItem('cart');
+    }
+  }, [state, isAuthenticated]);
 
   const addToCart = (product, quantity = 1) => {
+    if (!isAuthenticated) {
+      throw new Error('You must be logged in to add items to cart');
+    }
     dispatch({ type: 'ADD_ITEM', product, quantity });
   };
   const removeFromCart = (productId) => {
+    if (!isAuthenticated) {
+      throw new Error('You must be logged in to modify cart');
+    }
     dispatch({ type: 'REMOVE_ITEM', productId });
   };
   const updateQuantity = (productId, quantity) => {
+    if (!isAuthenticated) {
+      throw new Error('You must be logged in to modify cart');
+    }
     dispatch({ type: 'UPDATE_QUANTITY', productId, quantity });
   };
   const clearCart = () => {
+    if (!isAuthenticated) {
+      throw new Error('You must be logged in to modify cart');
+    }
     dispatch({ type: 'CLEAR_CART' });
   };
 
