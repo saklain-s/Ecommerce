@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { Box, Typography, Paper, TextField, Button, Alert, CircularProgress, Chip, Divider } from '@mui/material';
+import { API_ENDPOINTS } from '../api/config';
 
 export default function Profile() {
   const { token, isAuthenticated } = useAuth();
@@ -34,7 +35,7 @@ export default function Profile() {
         console.log('Role from JWT:', role);
         
         // Try to fetch user profile from the backend using the correct endpoint
-        axios.get(`http://localhost:8080/api/users/${username}`, {
+        axios.get(`${API_ENDPOINTS.USERS}/${username}`, {
           headers: { Authorization: `Bearer ${token}` }
         })
           .then(res => {
@@ -76,7 +77,7 @@ export default function Profile() {
     setError(null);
     setSuccess(null);
     try {
-      await axios.put(`http://localhost:8080/api/users/${user.username}/password`, { password }, {
+      await axios.put(`${API_ENDPOINTS.USERS}/${user.username}/password`, { password }, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setSuccess('Password updated successfully!');
