@@ -4,9 +4,15 @@
 .DS_Store
 Thumbs.db
 
+<<<<<<< HEAD
 
 *.mv.db
 *.trace.db
+=======
+# in .gitignore
+*.mv.db
+
+>>>>>>> fa25bec (Ignore runtime DB file)
 
 # =========================
 # Node.js
