@@ -24,47 +24,63 @@ export default function Profile() {
     setLoading(true);
     setError(null);
     
-          try {
-        // Decode JWT to get username and role
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        const username = payload.sub || payload.username;
-        const role = payload.role || 'CUSTOMER';
-        
-        console.log('JWT payload:', payload);
-        console.log('Username from JWT:', username);
-        console.log('Role from JWT:', role);
-        
-        // Try to fetch user profile from the backend using the correct endpoint
-        axios.get(`${API_ENDPOINTS.USERS}/${username}`, {
-          headers: { Authorization: `Bearer ${token}` }
+    try {
+      // Decode JWT to get username and role
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const username = payload.sub || payload.username;
+      const role = payload.role || 'CUSTOMER';
+      
+      console.log('JWT payload:', payload);
+      console.log('Username from JWT:', username);
+      console.log('Role from JWT:', role);
+      
+      // Log the full API endpoint being called
+      const apiEndpoint = `${API_ENDPOINTS.USERS}/${username}`;
+      console.log('Calling API endpoint:', apiEndpoint);
+      console.log('Authorization header:', `Bearer ${token.substring(0, 20)}...`);
+      
+      // Try to fetch user profile from the backend using the correct endpoint
+      axios.get(apiEndpoint, {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      })
+        .then(res => {
+          console.log('User data from backend:', res.data);
+          setUser(res.data);
+          setLoading(false);
         })
-          .then(res => {
-            console.log('User data from backend:', res.data);
-            setUser(res.data);
-            setLoading(false);
-          })
-          .catch((err) => {
-            console.error('Profile fetch error:', err);
-            console.error('Error response:', err.response);
-            
-            // If the user endpoint doesn't exist, create a basic user object from JWT
-            if (err.response && err.response.status === 404) {
-              console.log('Creating fallback user object from JWT');
-              setUser({
-                username: username,
-                email: 'Email not available (user not found in database)',
-                role: role
-              });
-            } else {
-              setError(`Failed to load profile: ${err.response?.data || err.message}`);
-            }
-            setLoading(false);
-          });
-      } catch (err) {
-        console.error('JWT decode error:', err);
-        setError('Invalid authentication token');
-        setLoading(false);
-      }
+        .catch((err) => {
+          console.error('Profile fetch error:', err);
+          console.error('Error response:', err.response);
+          console.error('Error status:', err.response?.status);
+          console.error('Error data:', err.response?.data);
+          
+          // If the user endpoint doesn't exist, create a basic user object from JWT
+          if (err.response && err.response.status === 404) {
+            console.log('Creating fallback user object from JWT');
+            setUser({
+              username: username,
+              email: 'Email not available (user not found in database)',
+              role: role
+            });
+          } else if (err.response && err.response.status === 403) {
+            setError(`Access forbidden: You don't have permission to view this profile`);
+          } else if (err.response && err.response.status === 401) {
+            setError(`Authentication failed: Please log in again`);
+          } else if (err.code === 'ERR_NETWORK') {
+            setError(`Network error: Unable to connect to the server. Please check if the backend is running on port 8080.`);
+          } else {
+            setError(`Failed to load profile: ${err.response?.data || err.message}`);
+          }
+          setLoading(false);
+        });
+    } catch (err) {
+      console.error('JWT decode error:', err);
+      setError('Invalid authentication token');
+      setLoading(false);
+    }
   }, [token, isAuthenticated, navigate]);
 
   // Don't render profile content if not authenticated

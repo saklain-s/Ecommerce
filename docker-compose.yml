@@ -23,9 +23,7 @@ services:
 
   # Backend Service (Spring Boot)
   backend:
-    build:
-      context: ./sb-com
-      dockerfile: Dockerfile
+    image: shopaura-backend:latest
     container_name: shopaura-backend
     ports:
       - "8080:8080"
@@ -36,8 +34,9 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:h2:mem:testdb
       - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.h2.Driver
       - SPRING_H2_CONSOLE_ENABLED=true
-      - CORS_ALLOWED_ORIGINS=http://localhost:80,http://localhost
+      - CORS_ALLOWED_ORIGINS=http://localhost:80,http://localhost,http://localhost:5173
       - SPRING_CACHE_TYPE=redis
+      - SPRING_SECURITY_DEBUG=true
     depends_on:
       redis:
         condition: service_healthy
@@ -53,12 +52,13 @@ services:
 
   # Frontend Service (React)
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
+    image: shopaura-frontend:latest
     container_name: shopaura-frontend
     ports:
       - "80:80"
+    environment:
+      - NODE_ENV=production
+      - REACT_APP_API_BASE_URL=http://localhost:8080
     depends_on:
       - backend
     networks:

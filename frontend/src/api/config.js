@@ -7,7 +7,7 @@ const getApiBaseUrl = () => {
   
   // Check if running in development
   if (window.location.hostname === 'localhost' && (window.location.port === '5173' || window.location.port === '3000')) {
-    return 'http://localhost:8080'; // Local development
+    return 'http://localhost:8080'; // Local development backend
   }
   
   // Production - use relative URLs
@@ -15,6 +15,10 @@ const getApiBaseUrl = () => {
 };
 
 export const API_BASE_URL = getApiBaseUrl();
+
+// Log the API base URL for debugging
+console.log('API Base URL:', API_BASE_URL);
+console.log('Current location:', window.location.href);
 
 export const API_ENDPOINTS = {
   PRODUCTS: `${API_BASE_URL}/api/products`,

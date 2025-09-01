@@ -22,6 +22,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
+            .cors(cors -> cors.and())  // Enable CORS
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
@@ -30,6 +31,7 @@ public class SecurityConfig {
                     "/v3/api-docs/**",
                     "/api/users/register",
                     "/api/users/login",
+                    "/api/users/health",
                     "/api/products",
                     "/api/products/*",
                     "/api/products/paginated",
