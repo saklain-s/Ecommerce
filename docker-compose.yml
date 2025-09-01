@@ -37,6 +37,7 @@ services:
       - CORS_ALLOWED_ORIGINS=http://localhost:80,http://localhost,http://localhost:5173
       - SPRING_CACHE_TYPE=redis
       - SPRING_SECURITY_DEBUG=true
+      - LOGGING_LEVEL_COM_ECOMMERCE_PROJECT=DEBUG
     depends_on:
       redis:
         condition: service_healthy

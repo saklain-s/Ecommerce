@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { Box, Typography, TextField, Button, Alert, Paper } from '@mui/material';
 import { useAuth } from '../context/AuthContext';
+import { API_ENDPOINTS } from '../api/config';
 
 export default function Login() {
   const [username, setUsername] = useState('');
@@ -24,7 +25,7 @@ export default function Login() {
     e.preventDefault();
     setError(null);
     try {
-      const res = await axios.post('http://localhost:8080/api/users/login', { username, password });
+      const res = await axios.post(`${API_ENDPOINTS.AUTH}/login`, { username, password });
       login(res.data.token);
       
       // Redirect to the page they were trying to access, or home

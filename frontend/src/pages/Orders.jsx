@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { API_ENDPOINTS } from '../api/config';
 import { Box, Typography, Card, CardContent, CircularProgress, Grid, Alert } from '@mui/material';
 
 export default function Orders() {

@@ -126,6 +126,7 @@ public class SbComApplication {
 					};
 					
 					// Create products
+					List<Product> savedProducts = new ArrayList<>();
 					for (Object[] productData : featuredProducts) {
 						String name = (String) productData[0];
 						String description = (String) productData[1];
@@ -150,9 +151,16 @@ public class SbComApplication {
 							product.setImageUrl(imageUrl);
 							product.setCreatedBy(null); // No specific user for featured products
 							
-							productRepository.save(product);
+							Product savedProduct = productRepository.save(product);
+							savedProducts.add(savedProduct);
+							System.out.println("Saved product: " + savedProduct.getName() + " (ID: " + savedProduct.getProductId() + ")");
+						} else {
+							System.out.println("Category not found for: " + categoryName);
 						}
 					}
+					
+					System.out.println("Total products saved: " + savedProducts.size());
+					System.out.println("Total products in database: " + productRepository.count());
 					
 					System.out.println("Featured products initialized successfully!");
 			} catch (Exception e) {

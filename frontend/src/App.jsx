@@ -91,22 +91,30 @@ function Home() {
   const [loading, setLoading] = useState(true);
   const { addToCart } = useCart();
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
+  
   useEffect(() => {
     import('./api/config.js').then(({ API_ENDPOINTS }) => {
       axios.get(API_ENDPOINTS.PRODUCTS)
-        .then(res => { setProducts(res.data.slice(0, 8)); setLoading(false); })
-        .catch(() => setLoading(false));
+        .then(res => { 
+          console.log('Home products:', res.data);
+          setProducts(res.data); 
+          setLoading(false); 
+        })
+        .catch(err => {
+          console.error('Home products fetch error:', err);
+          setLoading(false);
+        });
     });
   }, []);
 
-  // Featured items for each category (using online images)
+  // Admin's manually added featured items for home page
   const featuredItems = [
     {
       category: 'Electronics',
       items: [
         {
           title: 'Wireless Headphones',
-          image: 'https://images.pexels.com/photos/374777/pexels-photo-374777.jpeg?auto=compress&w=400', // Headphones
+          image: 'https://images.pexels.com/photos/374777/pexels-photo-374777.jpeg?auto=compress&w=400',
           description: 'High-fidelity sound, noise cancelling.',
           price: 1799,
           stock: 12,
@@ -127,7 +135,7 @@ function Home() {
         },
         {
           title: 'Bluetooth Speaker',
-          image: 'https://images.pexels.com/photos/33080375/pexels-photo-33080375.jpeg', // Bluetooth Speaker
+          image: 'https://images.pexels.com/photos/33080375/pexels-photo-33080375.jpeg',
           description: 'Portable, powerful sound.',
           price: 1500,
           stock: 20,
@@ -160,7 +168,7 @@ function Home() {
         },
         {
           title: 'Leather Handbag',
-          image: 'https://images.pexels.com/photos/5706269/pexels-photo-5706269.jpeg', // Leather Handbag
+          image: 'https://images.pexels.com/photos/5706269/pexels-photo-5706269.jpeg',
           description: 'Premium quality, spacious.',
           price: 4500,
           stock: 7,
@@ -172,7 +180,7 @@ function Home() {
       items: [
         {
           title: 'Table Lamp',
-          image: 'https://images.pexels.com/photos/1112598/pexels-photo-1112598.jpeg', // Table Lamp
+          image: 'https://images.pexels.com/photos/1112598/pexels-photo-1112598.jpeg',
           description: 'Modern design, warm light.',
           price: 1300,
           stock: 14,
@@ -186,7 +194,7 @@ function Home() {
         },
         {
           title: 'Wall Clock',
-          image: 'https://images.pexels.com/photos/191703/pexels-photo-191703.jpeg', // Wall Clock
+          image: 'https://images.pexels.com/photos/191703/pexels-photo-191703.jpeg',
           description: 'Silent, elegant look.',
           price: 900,
           stock: 22,
@@ -212,14 +220,14 @@ function Home() {
         },
         {
           title: 'Cookbook',
-          image: 'https://images.pexels.com/photos/8851929/pexels-photo-8851929.jpeg', // Cookbook
+          image: 'https://images.pexels.com/photos/8851929/pexels-photo-8851929.jpeg',
           description: 'Delicious recipes inside.',
           price: 400,
           stock: 16,
         },
         {
           title: 'Science Fiction',
-          image: 'https://images.pexels.com/photos/590493/pexels-photo-590493.jpeg?auto=compress&w=400', // Science Fiction Book
+          image: 'https://images.pexels.com/photos/590493/pexels-photo-590493.jpeg?auto=compress&w=400',
           description: 'Explore new worlds.',
           price: 250,
           stock: 12,
@@ -245,7 +253,7 @@ function Home() {
         },
         {
           title: 'Yoga Mat',
-          image: 'https://images.pexels.com/photos/4056723/pexels-photo-4056723.jpeg?auto=compress&w=400', // Yoga Mat
+          image: 'https://images.pexels.com/photos/4056723/pexels-photo-4056723.jpeg?auto=compress&w=400',
           description: 'Non-slip, eco-friendly.',
           price: 700,
           stock: 23,
@@ -259,7 +267,7 @@ function Home() {
         },
         {
           title: 'Dumbbell Set',
-          image: 'https://images.pexels.com/photos/260352/pexels-photo-260352.jpeg', // Dumbbell Set
+          image: 'https://images.pexels.com/photos/260352/pexels-photo-260352.jpeg',
           description: 'Adjustable weights.',
           price: 3000,
           stock: 11,
@@ -270,32 +278,32 @@ function Home() {
       category: 'Beauty',
       items: [
         {
-          title: 'Face Serum',
-          image: 'https://images.pexels.com/photos/8140913/pexels-photo-8140913.jpeg', // Face Serum
-          description: 'Glowing skin formula.',
-          price: 1200,
+          title: 'Face Cream',
+          image: 'https://images.pexels.com/photos/3785147/pexels-photo-3785147.jpeg?auto=compress&w=400',
+          description: 'Hydrating, anti-aging.',
+          price: 800,
           stock: 19,
         },
         {
-          title: 'Lipstick Set',
-          image: 'https://images.pexels.com/photos/4041392/pexels-photo-4041392.jpeg?auto=compress&w=400', // Lipstick Set
-          description: 'Vibrant, long-lasting.',
-          price: 900,
-          stock: 14,
+          title: 'Perfume',
+          image: 'https://images.pexels.com/photos/965989/pexels-photo-965989.jpeg?auto=compress&w=400',
+          description: 'Elegant fragrance.',
+          price: 1200,
+          stock: 13,
+        },
+        {
+          title: 'Lipstick',
+          image: 'https://images.pexels.com/photos/2533266/pexels-photo-2533266.jpeg?auto=compress&w=400',
+          description: 'Long-lasting color.',
+          price: 500,
+          stock: 27,
         },
         {
           title: 'Hair Dryer',
-          image: 'https://images.pexels.com/photos/973406/pexels-photo-973406.jpeg', // Hair Dryer
-          description: 'Quick dry, low noise.',
+          image: 'https://images.pexels.com/photos/3993449/pexels-photo-3993449.jpeg?auto=compress&w=400',
+          description: 'Professional quality.',
           price: 1800,
           stock: 8,
-        },
-        {
-          title: 'Body Lotion',
-          image: 'https://images.pexels.com/photos/27363151/pexels-photo-27363151.jpeg', // Body Lotion
-          description: 'Moisturizing, non-greasy.',
-          price: 600,
-          stock: 21,
         },
       ],
     },
@@ -304,31 +312,31 @@ function Home() {
       items: [
         {
           title: 'Building Blocks',
-          image: 'https://images.pexels.com/photos/105855/pexels-photo-105855.jpeg', // Building Blocks
-          description: 'Creative fun for kids.',
-          price: 1100,
-          stock: 30,
+          image: 'https://images.pexels.com/photos/8613089/pexels-photo-8613089.jpeg?auto=compress&w=400',
+          description: 'Creative construction.',
+          price: 600,
+          stock: 21,
         },
         {
-          title: 'Plush Bear',
-          image: 'https://images.pexels.com/photos/459225/pexels-photo-459225.jpeg?auto=compress&w=400', // Plush Bear
-          description: 'Soft and cuddly.',
-          price: 800,
-          stock: 18,
-        },
-        {
-          title: 'Puzzle Game',
-          image: 'https://images.pexels.com/photos/278918/pexels-photo-278918.jpeg?auto=compress&w=400',
-          description: 'Challenging and fun.',
-          price: 950,
-          stock: 22,
+          title: 'Puzzle Set',
+          image: 'https://images.pexels.com/photos/8613089/pexels-photo-8613089.jpeg?auto=compress&w=400',
+          description: 'Brain-teasing fun.',
+          price: 400,
+          stock: 15,
         },
         {
           title: 'Remote Car',
-          image: 'https://images.pexels.com/photos/14857461/pexels-photo-14857461.jpeg', // Remote Car
-          description: 'Fast and rechargeable.',
-          price: 1600,
+          image: 'https://images.pexels.com/photos/8613089/pexels-photo-8613089.jpeg?auto=compress&w=400',
+          description: 'Fast and fun.',
+          price: 800,
           stock: 9,
+        },
+        {
+          title: 'Doll House',
+          image: 'https://images.pexels.com/photos/8613089/pexels-photo-8613089.jpeg?auto=compress&w=400',
+          description: 'Imaginative play.',
+          price: 1200,
+          stock: 6,
         },
       ],
     },
@@ -338,28 +346,27 @@ function Home() {
         {
           title: 'Organic Apples',
           image: 'https://images.pexels.com/photos/102104/pexels-photo-102104.jpeg?auto=compress&w=400',
-          description: 'Fresh and juicy.',
-          price: 180,
-          stock: 50,
-        },
-        {
-          title: 'Almonds',
-          image: 'https://images.pexels.com/photos/57042/pexels-photo-57042.jpeg', // Almonds
-          description: 'Healthy snack.',
-          price: 120,
+          description: 'Fresh and healthy.',
+          price: 200,
           stock: 35,
         },
-        
         {
-          title: 'Olive Oil',
-          image: 'https://images.pexels.com/photos/2097090/pexels-photo-2097090.jpeg?auto=compress&w=400', // Olive Oil
-          description: 'Extra virgin, pure.',
-          price: 450,
-          stock: 20,
+          title: 'Whole Milk',
+          image: 'https://images.pexels.com/photos/248412/pexels-photo-248412.jpeg?auto=compress&w=400',
+          description: 'Rich and creamy.',
+          price: 80,
+          stock: 42,
+        },
+        {
+          title: 'Bread Loaf',
+          image: 'https://images.pexels.com/photos/4110253/pexels-photo-4110253.jpeg?auto=compress&w=400',
+          description: 'Freshly baked.',
+          price: 60,
+          stock: 38,
         },
         {
           title: 'Brown Rice',
-          image: 'https://images.pexels.com/photos/4110253/pexels-photo-4110253.jpeg', // Brown Rice
+          image: 'https://images.pexels.com/photos/4110253/pexels-photo-4110253.jpeg',
           description: 'Whole grain, nutritious.',
           price: 100,
           stock: 28,
@@ -407,12 +414,11 @@ function Home() {
           </Button>
         </Box>
         <Box sx={{ display: { xs: 'none', md: 'block' } }}>
-          {/* You can replace this with a product/category image if desired */}
           <img src="/shopaurabanner.jpg" alt="ShopAura Banner" style={{ borderRadius: 16, width: 320, boxShadow: '0 8px 32px rgba(0,0,0,0.18)' }} />
         </Box>
       </Box>
 
-      {/* Featured Categories Grid */}
+      {/* Featured Categories Grid - Admin's manually added items */}
       <Box sx={{ maxWidth: 1400, mx: 'auto', mb: 8 }}>
         {featuredItems.map(cat => (
           <Box key={cat.category} sx={{ mb: 6 }}>
@@ -479,16 +485,20 @@ function Home() {
         ))}
       </Box>
 
-     <Snackbar
-       open={snackbar.open}
-       autoHideDuration={3000}
-       onClose={() => setSnackbar({ ...snackbar, open: false })}
-       anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-     >
-       <Alert severity={snackbar.severity} sx={{ width: '100%' }}>{snackbar.message}</Alert>
-     </Snackbar>
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={3000}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert severity={snackbar.severity} sx={{ width: '100%' }}>{snackbar.message}</Alert>
+      </Snackbar>
 
+      {/* All Products Section - Shows both admin items and seller products */}
       <Box sx={{ mt: 8, display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: '60vh' }}>
+        <Typography variant="h4" fontWeight={700} mb={4} color="primary.main">
+          All Products
+        </Typography>
         <Grid container spacing={3} sx={{ maxWidth: 1200, mt: 2 }}>
           {loading ? (
             [...Array(8)].map((_, i) => (
@@ -535,7 +545,6 @@ function Navbar() {
   const handleLogout = () => {
     logout();
     handleClose();
-    // Clear cart when logging out
     clearCart();
     navigate('/');
   };

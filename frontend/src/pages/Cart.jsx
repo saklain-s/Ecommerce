@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Typography, IconButton, Button, TextField, Grid, Card, CardContent, Snackbar, Alert, Divider, Chip, Skeleton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
+import { API_ENDPOINTS } from '../api/config';
 
 export default function Cart() {
   const { items, updateQuantity, removeFromCart, clearCart } = useCart();
@@ -46,7 +47,7 @@ export default function Cart() {
     setError(null);
     try {
       const userId = JSON.parse(atob(token.split('.')[1])).sub || 1;
-      await axios.post(`http://localhost:8080/api/orders/place/${userId}`, {}, {
+      await axios.post(`${API_ENDPOINTS.ORDERS}/place/${userId}`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setSuccess(true);

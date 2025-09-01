@@ -1,7 +1,4 @@
 spring:
-  profiles:
-    active: docker
-  
   # Database Configuration for Docker
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:h2:mem:testdb}

@@ -6,6 +6,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
+import { API_ENDPOINTS } from '../api/config';
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -24,13 +25,19 @@ export default function Products() {
   const { addToCart } = useCart();
 
   useEffect(() => {
-    axios.get('http://localhost:8080/api/products')
+    console.log('Fetching products from:', API_ENDPOINTS.PRODUCTS);
+    axios.get(API_ENDPOINTS.PRODUCTS)
       .then(res => {
+        console.log('Products response:', res.data);
         setProducts(res.data);
         setLoading(false);
       })
       .catch(err => {
-        setError('Failed to fetch products');
+        console.error('Products fetch error:', err);
+        console.error('Error response:', err.response);
+        console.error('Error status:', err.response?.status);
+        console.error('Error data:', err.response?.data);
+        setError(`Failed to fetch products: ${err.response?.data || err.message}`);
         setLoading(false);
       });
   }, []);
@@ -47,7 +54,7 @@ export default function Products() {
   const handleDelete = async (id) => {
     if (!token) return;
     try {
-      await axios.delete(`http://localhost:8080/api/products/${id}`, {
+      await axios.delete(`${API_ENDPOINTS.PRODUCTS}/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setProducts(products.filter(p => p.productId !== id));

@@ -1,5 +1,5 @@
 # Simple build for Spring Boot application
-FROM openjdk:11-jre-slim
+FROM eclipse-temurin:21-jre
 
 # Install curl for health checks
 RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
